@@ -5,12 +5,13 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { getRowName, getSeatNum } from "../helpers";
 import { range } from "../utils";
 import { SeatContext } from "./SeatContext";
-import seatImgSrc from "../assets/seat-available.svg";
+import Loading from "./Loading";
+import Seat from "./Seat";
 
 const TicketWidget = () => {
   // TODO: use values from Context
   const {
-    state: { seatsPerRow, numOfRows },
+    state: { seatsPerRow, numOfRows, bookedSeats },
   } = React.useContext(SeatContext);
 
   // TODO: implement the loading spinner <CircularProgress />
@@ -18,26 +19,28 @@ const TicketWidget = () => {
 
   return (
     <Wrapper>
-      {range(numOfRows).map((rowIndex) => {
-        const rowName = getRowName(rowIndex);
+      {seatsPerRow ? (
+        range(numOfRows).map((rowIndex) => {
+          const rowName = getRowName(rowIndex);
 
-        return (
-          <Row key={rowIndex}>
-            <RowLabel>Row {rowName}</RowLabel>
-            {range(seatsPerRow).map((seatIndex) => {
-              const seatId = `${rowName}-${getSeatNum(seatIndex)}`;
+          return (
+            <Row key={rowIndex}>
+              <RowLabel>Row {rowName}</RowLabel>
+              {range(seatsPerRow).map((seatIndex) => {
+                const seatId = `${rowName}-${getSeatNum(seatIndex)}`;
 
-              return (
-                <SeatWrapper key={seatId}>
-                  <div>
-                    <img src={seatImgSrc} />
-                  </div>
-                </SeatWrapper>
-              );
-            })}
-          </Row>
-        );
-      })}
+                return (
+                  <SeatWrapper key={seatId}>
+                    <Seat bookedSeats={bookedSeats} seatId={seatId} />
+                  </SeatWrapper>
+                );
+              })}
+            </Row>
+          );
+        })
+      ) : (
+        <Loading />
+      )}
     </Wrapper>
   );
 };
