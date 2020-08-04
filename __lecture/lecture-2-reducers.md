@@ -331,6 +331,41 @@ function App() {
     </form>
   );
 }
+// REFACTORED TO USEREDUCER
+function reducer(state, action) {
+  switch (action.type) {
+    case "REQUEST-DATA":
+      return "loading";
+    case "RECEIVED-DATA":
+      return "idle";
+    case "RECEIVE-ERROR":
+      return "error";
+    default:
+      throw new Error("Unrecognized action");
+  }
+}
+function App() {
+  const [status, dispatch] = React.useReducer(reducer, "idle");
+
+  return (
+    <form
+      onSubmit={() => {
+        dispatch({ type: "REQUEST-DATA" });
+
+        getStatusFromServer()
+          .then(() => {
+            dispatch({ type: "RECEIVED-DATA" });
+          })
+          .catch(() => {
+            dispatch("RECEIVE-ERROR");
+          });
+      }}
+    >
+      Status is: {status}
+      <button>Submit</button>
+    </form>
+  );
+}
 ```
 
 ---
@@ -503,20 +538,35 @@ Update these objects to use `useReducer`, with a single immutable object
 
 ```jsx
 // Exercise 4
+const initialState = { points: 0, status: "idle" };
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "WIN-POINT":
+      return { ...state, point: state.points + 1 };
+    case "LOSE-POINT":
+      return { ...state, point: state.points - 1 };
+    case "START-GAME":
+      return { points: 0, status: "playing" };
+    default:
+      return state;
+  }
+};
 const Game = () => {
-  const [points, setPoints] = React.useState(0);
-  const [status, setStatus] = React.useState("idle");
+  const [state, dispatch] = React.useReducer(reducer, {
+    initialState,
+  });
 
   return (
     <>
-      Your score: {points}.
-      {status === "playing" && (
+      Your score: {state.points}.
+      {state.status === "playing" && (
         <>
-          <button onClick={() => setPoints(points + 1)}>🍓</button>
-          <button onClick={() => setPoints(points - 1)}>💀</button>
+          <button onClick={() => dispatch({ type: "WIN-POINT" })}>🍓</button>
+          <button onClick={() => dispatch({ type: "LOSE-POINT" })}>💀</button>
         </>
       )}
-      <button onClick={() => setStatus("playing")}>Start game</button>
+      <button onClick={() => dispatch("START-GAME")}>Start game</button>
     </>
   );
 };
