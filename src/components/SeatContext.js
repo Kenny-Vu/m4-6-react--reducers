@@ -12,9 +12,16 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case "receive-seat-info-from-server":
+      //creating new object with updated seat availabilities using action.bookedSeats
+      let updatedSeats = {};
+      Object.keys(action.seats).forEach((id) => {
+        let seatPrice = action.seats[`${id}`].price;
+        let bookingStatus = action.bookedSeats[`${id}`] ? true : false;
+        updatedSeats[`${id}`] = { price: seatPrice, isBooked: bookingStatus };
+      });
       return {
         hasLoaded: true,
-        seats: action.seats,
+        seats: updatedSeats,
         numOfRows: action.numOfRows,
         seatsPerRow: action.seatsPerRow,
         bookedSeats: action.bookedSeats,

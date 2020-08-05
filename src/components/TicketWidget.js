@@ -11,7 +11,7 @@ import Seat from "./Seat";
 const TicketWidget = () => {
   // TODO: use values from Context
   const {
-    state: { seatsPerRow, numOfRows, bookedSeats },
+    state: { seatsPerRow, numOfRows, bookedSeats, seats },
   } = React.useContext(SeatContext);
 
   // TODO: implement the loading spinner <CircularProgress />
@@ -28,10 +28,20 @@ const TicketWidget = () => {
               <RowLabel>Row {rowName}</RowLabel>
               {range(seatsPerRow).map((seatIndex) => {
                 const seatId = `${rowName}-${getSeatNum(seatIndex)}`;
-
+                const seat = seats[`${seatId}`];
                 return (
                   <SeatWrapper key={seatId}>
-                    <Seat bookedSeats={bookedSeats} seatId={seatId} />
+                    <Seat
+                      rowIndex={rowIndex}
+                      seatIndex={seatIndex}
+                      width={36}
+                      height={36}
+                      bookedSeats={bookedSeats}
+                      seatId={seatId}
+                      seats={seats}
+                      price={seat.price}
+                      status={seat.isBooked ? "unavailable" : "available"}
+                    />
                   </SeatWrapper>
                 );
               })}
