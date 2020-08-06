@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 
+import { BookingContext } from "./BookingContext";
+
 import seatImgSrc from "../assets/seat-available.svg";
 
 const Seat = ({
@@ -16,12 +18,20 @@ const Seat = ({
   seatId,
   seats,
 }) => {
-  //renders the seat color depending on availability
+  const {
+    state,
+    actions: { handleSeatSelection },
+  } = React.useContext(BookingContext);
   const isDisabled = status === "unavailable" ? true : false;
-  //Tippy's text bubble and arrow not appearing. Need fixing.
   return (
     <Tippy content={`${seatId} - ${price}$`}>
-      <Button disabled={isDisabled}>
+      <Button
+        onClick={() => {
+          handleSeatSelection({ seatId, price });
+          console.log(state);
+        }}
+        disabled={isDisabled}
+      >
         <img src={seatImgSrc} style={{ width, height }} />
       </Button>
     </Tippy>
@@ -30,6 +40,7 @@ const Seat = ({
 
 const Button = styled.button`
   border: none;
+  cursor: pointer;
   &&:disabled {
     filter: grayscale(100%);
   }
