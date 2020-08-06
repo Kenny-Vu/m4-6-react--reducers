@@ -6,6 +6,7 @@ import { range } from "../utils";
 import { SeatContext } from "./SeatContext";
 import Loading from "./Loading";
 import Seat from "./Seat";
+import PurchaseModal from "./PurchaseModal";
 
 const TicketWidget = () => {
   // TODO: use values from Context
@@ -50,6 +51,7 @@ const TicketWidget = () => {
       ) : (
         <Loading />
       )}
+      <PurchaseModal />
     </Wrapper>
   );
 };
