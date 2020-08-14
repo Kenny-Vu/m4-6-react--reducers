@@ -28,7 +28,6 @@ const Seat = ({
       <Button
         onClick={() => {
           handleSeatSelection({ seatId, price });
-          console.log(state);
         }}
         disabled={isDisabled}
       >

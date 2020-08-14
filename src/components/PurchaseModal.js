@@ -10,19 +10,27 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import { BookingContext } from "./BookingContext";
 
 const PurchaseModal = () => {
-  const { state } = React.useContext(BookingContext);
+  const {
+    state,
+    actions: { handleCancelSeat },
+  } = React.useContext(BookingContext);
 
   const selectedSeatId = state.selectedSeatId;
+  const seatPrice = state.price;
 
   return (
-    <Dialog open={selectedSeatId !== null}>
+    <Dialog open={selectedSeatId !== null ? true : false}>
       <DialogTitle>User Form</DialogTitle>
       <DialogContent>
         <DialogContentText>Please fill out form</DialogContentText>
+        <DialogContentText>Seat chosen: {selectedSeatId}</DialogContentText>
+        <DialogContentText>Price: {seatPrice}$</DialogContentText>
+
         <TextField />
       </DialogContent>
       <DialogActions>
         <Button>Submit</Button>
+        <Button onClick={handleCancelSeat}>Cancel</Button>
       </DialogActions>
     </Dialog>
   );

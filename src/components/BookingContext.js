@@ -10,6 +10,7 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
+  console.log(action);
   switch (action.type) {
     case "begin-booking-process": {
       return {
@@ -21,27 +22,27 @@ const reducer = (state, action) => {
     }
     case "confirm-choice": {
       return {
+        ...state,
         status: "awaiting-response",
-        error: null,
-        selectedSeatId: action.seatId,
-        price: action.price,
       };
     }
     case "receive-confirmation": {
       return {
+        ...state,
         status: "purchased",
-        error: null,
-        selectedSeatId: action.seatId,
-        price: action.price,
       };
     }
-    default:
+    case "receive-error": {
       return {
+        ...state,
         status: "error",
         error: true,
-        selectedSeatId: action.seatId,
-        price: action.price,
       };
+    }
+    case "cancel-choice":
+      return initialState;
+    default:
+      return state;
   }
 };
 
@@ -57,9 +58,13 @@ export const BookingProvider = ({ children }) => {
     });
   };
 
+  const handleCancelSeat = () => {
+    dispatch({ type: "cancel-choice" });
+  };
+
   return (
     <BookingContext.Provider
-      value={{ state, actions: { handleSeatSelection } }}
+      value={{ state, actions: { handleSeatSelection, handleCancelSeat } }}
     >
       {children}
     </BookingContext.Provider>
